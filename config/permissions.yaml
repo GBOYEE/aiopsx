@@ -1,0 +1,22 @@
+tools:
+  shell:
+    risk: high
+    require_approval: true
+    allowed_roles: [admin]
+    allowed_commands: ["echo","ls","cat","pwd","whoami","date","ps","df","du","free","top","grep"]
+  disk_clean:
+    risk: low
+    auto_execute: true
+    allowed_roles: [admin, operator]
+  docker_restart:
+    risk: medium
+    require_approval: true
+    allowed_roles: [admin]
+  docker_stop:
+    risk: high
+    require_approval: true
+    allowed_roles: [admin]
+
+defaults:
+  auto_execute_risk: [low]
+  require_approval_risk: [medium, high]

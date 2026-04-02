@@ -1,0 +1,56 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "aiopsx"
+version = "1.0.0"
+description = "Autonomous infrastructure AI engineer with controlled autonomy"
+authors = [{name = "Oyebanji Adegboyega", email = "oyebanjiadegboyega@gmail.com"}]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.111",
+    "uvicorn[standard]>=0.27",
+    "pydantic>=2.0",
+    "sqlalchemy>=2.0",
+    "psycopg2-binary>=2.9",
+    "pyyaml>=6.0",
+    "requests>=2.31",
+    "psutil>=5.9",
+    "streamlit>=1.35",
+]
+
+[project.scripts]
+aiopsx = "api.server:run"
+
+[project.optional-dependencies]
+dev = [
+    "black>=24.0",
+    "flake8>=7.0",
+    "mypy>=1.0",
+    "isort>=5.13",
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
+
+[tool.black]
+line-length = 100
+
+[tool.ruff]
+select = ["E", "F", "W"]
+line-length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --tb=short"
+
+[tool.hatch.build]
+include = [
+    "aiopsx/**/*.py",
+    "config/*.yaml",
+    "data/*.yaml",
+]
+exclude = []

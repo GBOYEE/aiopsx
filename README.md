@@ -1,141 +1,77 @@
-# AIOPS-X 🚀
+# aiopsx
 
-Autonomous infrastructure AI engineer with controlled autonomy — monitors, diagnoses, and fixes issues with safety and human-in-the-loop oversight.
+Production-grade AIOps with built-in safety, rollback, and human-in-the-loop decision gates.
 
-[![CI](https://github.com/GBOYEE/aiops-x/actions/workflows/ci.yml/badge.svg)](https://github.com/GBOYEE/aiops-x)
-[![Coverage](https://codecov.io/gh/GBOYEE/aiops-x/branch/main/graph/badge.svg)](https://codecov.io/gh/GBOYEE/aiops-x)
-[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+## ✨ Why this exists
 
----
+Modern infrastructure generates floods of alerts. Manual triage is slow, error‑prone, and lacks auditability. aiopsx turns LLMs into a reliable autonomous infrastructure engineer that monitors, diagnoses, decides, and acts—safely.
 
-## What is AIOPS-X?
+## Key Features
 
-AIOPS-X is a production-grade system that:
-
-- **Monitors** system metrics (CPU, memory, disk, services) with configurable thresholds
-- **Diagnoses** anomalies using LLMs (local or OpenAI) with structured prompts
-- **Decides** actions based on severity and safety policy (auto/approval/block)
-- **Executes** approved actions with safe tool wrappers and rollback logic
-- **Provides** real-time dashboard and approval UI for human oversight
-
-All actions are logged, auditable, and reversible. Designed for job-ready portfolio demonstration.
-
----
-
-## Quick Start (Docker Compose)
-
-```bash
-git clone https://github.com/GBOYEE/aiops-x
-cd aiops-x
-cp .env.example .env
-# adjust .env if needed (e.g., disable approval for quick test)
-
-docker-compose up -d
-# API: http://localhost:8000
-# Dashboard: http://localhost:8501 (Streamlit)
-```
-
----
+- Real-time metrics + LLM-powered diagnosis
+- Policy-driven decisions (auto / human-approval / block)
+- Safe execution with automatic rollback on degradation
+- Full audit trail & Streamlit approval dashboard
+- Docker‑Compose ready, tests, CI, permissions.yaml
 
 ## Architecture
 
 ```mermaid
-graph TD
-    Monitor -->|event| Orchestrator
-    Orchestrator --> Diagnosis[Diagnosis Agent]
-    Diagnosis -->|diagnosis| Decision[Decision Agent]
-    Decision -->|action| Executor[Executor Agent]
-    Executor -->|tool| Tools[System Tools]
-    Orchestrator -->|audit| DB[(PostgreSQL)]
-    Decision -->|if medium/high| Approval[Approval Queue]
-    Approval -->|human approves| Executor
-
-    subgraph "AIOPS-X Core"
-        Monitor
-        Orchestrator
-        Diagnosis
-        Decision
-        Executor
+flowchart TD
+    subgraph "Monitoring"
+        A[System Metrics] --> B[Alert Engine]
     end
+    B --> C{LLM Diagnosis}
+    C --> D[Plan Actions]
+    D --> E{Policy Gate}
+    E -->|Auto| F[Execute Action]
+    E -->|Human Approval| G[Approval Dashboard]
+    E -->|Block| H[Notify & Log]
+    G -->|Approve| F
+    G -->|Reject| H
+    F --> I[Post‑action Health Check]
+    I -->|Degraded| J[Rollback]
+    I -->|OK| K[Log Success]
+    J --> K
+    K --> L[(Postgres Audit)]
+    H --> L
 ```
 
----
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/health` | Service health |
-| `GET` | `/metrics` | Prometheus-style metrics |
-| `GET` | `/events` | List recent monitor events |
-| `GET` | `/decisions` | List recent AI decisions |
-| `POST` | `/run_cycle` | Manually trigger monitor→diagnose→decide |
-| `GET` | `/approvals/pending` | List pending actions |
-| `POST` | `/approvals/{id}/approve` | Approve an action |
-| `POST` | `/approvals/{id}/reject` | Reject an action |
-
----
-
-## Safety
-
-- **Tool permissions** — risk levels defined in `config/permissions.yaml`
-- **Approval workflow** — medium/high actions require human approval
-- **Rollback** — executor records state before changes; can revert on failure
-- **Audit trail** — all events, decisions, actions stored in PostgreSQL
-
----
-
-## Dashboard
-
-Streamlit UI (`dashboard/app.py`) provides:
-
-- Live system metrics (CPU, memory, disk)
-- Recent events and AI reasoning
-- Pending approvals with approve/reject buttons
-- Success rate charts
-
-Run: `streamlit run dashboard/app.py`
-
----
-
-## Development
+## Quick Start
 
 ```bash
-# Install dependencies
-pip install -r requirements.txt
-pip install -e .
-
-# Run API
-uvicorn api.server:app --reload
-
-# Run tests
-pytest tests/ -v --cov=.
-
-# Lint
-black . && isort . && flake8 . && mypy .
+# Clone and run
+git clone https://github.com/GBOYEE/aiopsx.git
+cd aiopsx
+cp .env.example .env
+# Edit .env with your LLM API key if needed (Ollama works by default)
+docker compose up --build -d
 ```
 
----
+Open dashboard: `http://localhost:8501`
 
-## Configuration
+## Stack
 
-Environment variables (`.env`):
+- **FastAPI** — control plane & webhooks
+- **Streamlit** — approval & monitoring dashboard
+- **PostgreSQL** — state & audit logs
+- **Redis** — event bus & coordination
+- **Ollama / OpenAI** — LLM diagnosis
+- **Docker Compose** — one‑command deploy
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `AIOPS_ENV` | `production` | Environment |
-| `AIOPS_PORT` | `8000` | API port |
-| `DATABASE_URL` | `postgresql+psycopg2://aiopsx:aiopsx@localhost:5432/aiopsx` | PostgreSQL |
-| `OLLAMA_URL` | `http://localhost:11434` | Local LLM endpoint |
-| `OPENAI_API_KEY` | `` | Optional OpenAI fallback |
-| `MONITOR_INTERVAL` | `60` | Seconds between checks |
-| `APPROVAL_TIMEOUT` | `3600` | Seconds before approval expires |
+## Safety & Governance
 
-Permissions: `config/permissions.yaml`.
+- Human‑in‑the‑loop for high‑risk actions via Streamlit approvals
+- Automatic rollback if health degrades after action
+- Immutable audit log (who approved, what changed, outcomes)
+- Granular permissions via `permissions.yaml`
+- Test suite + pre‑commit hooks
 
----
+## Status
+
+v1.2.0 — Production‑ready, fully tested, CI enabled.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT
+```

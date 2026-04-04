@@ -1,5 +1,13 @@
 # aiopsx
 
+[![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python&logoColor=white)](https://www.python.org)
+[![Docker](https://img.shields.io/badge/Docker-✓-blue?logo=docker&logoColor=white)](https://www.docker.com)
+[![FastAPI](https://img.shields.io/badge/FastAPI-✓-green?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Streamlit](https://img.shields.io/badge/Streamlit-✓-red?logo=streamlit&logoColor=white)](https://streamlit.io)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-✓-blue?logo=postgresql&logoColor=white)](https://www.postgresql.org)
+[![Redis](https://img.shields.io/badge/Redis-✓-red?logo=redis&logoColor=white)](https://redis.io)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICIZE.md)
+
 Production-grade AIOps with built-in safety, rollback, and human-in-the-loop decision gates.
 
 ## ✨ Why this exists

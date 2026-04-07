@@ -1,110 +1,111 @@
 # aiopsx — AI Deployment & Monitoring Toolkit
 
-[![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python&logoColor=white)](https://www.python.org)
-[![Docker](https://img.shields.io/badge/Docker-✓-blue?logo=docker&logoColor=white)](https://www.docker.com)
-[![FastAPI](https://img.shields.io/badge/FastAPI-✓-green?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![Streamlit](https://img.shields.io/badge/Streamlit-✓-red?logo=streamlit&logoColor=white)](https://streamlit.io)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-✓-blue?logo=postgresql&logoColor=white)](https://postgresql.org)
-[![Redis](https://img.shields.io/badge/Redis-✓-red?logo=redis&logoColor=white)](https://redis.io)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11+-blue?logo=python&logoColor=white)](https://www.python.org)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker)](docker-compose.yml)
+[![CI](https://github.com/GBOYEE/aiopsx/actions/workflows/ci.yml/badge.svg)](https://github.com/GBOYEE/aiopsx/actions)
+[![Coverage](https://img.shields.io/codecov/c/github/GBOYEE/aiopsx)](https://codecov.io/gh/GBOYEE/aiopsx)
 
-## 🚀 What Problem This Solves
+**Keep your AI agents healthy and auditable.** aiopsx provides a complete operations toolkit for deploying, monitoring, and governing AI agent services in production — with automatic rollback, human-in-the-loop approval gates, and immutable audit logs.
 
-Deploying and monitoring AI agents in production is complex: you need health checks, metrics, logging, rollback on failure, and human approval gates. Most DIY solutions are brittle and lack audit trails. aiopsx provides a complete ops toolkit tailored for AI workloads.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/GBOYEE/aiopsx/main/screenshots/dashboard.png" alt="aiopsx Streamlit dashboard" width="800"/>
+</p>
 
-## ⚙️ How It Works
+## ✨ Features
 
-aiopsx wraps your AI agent services with:
-- **FastAPI control plane** for health checks, metrics, and actions
-- **Streamlit dashboard** for human-in-the-loop approvals
-- **PostgreSQL** for persistent state and immutable audit logs
-- **Redis** for event bus and coordination
-- **Docker Compose** setup with one-command deploy
-- **Policy engine** (permissions.yaml) to define auto vs. manual actions
+- 🔍 **Health Monitoring** — Continuous `/health` checks and Prometheus metrics scraping
+- 🤖 **LLM-Powered Diagnosis** — AI analyzes anomalies and suggests remediation
+- 🛡️ **Policy Gates** — Define which actions are auto-approved vs human-approved
+- 🔄 **Automatic Rollback** — If health degrades after an action, automatically revert
+- 📜 **Audit Trail** — Every decision, approval, and action logged to PostgreSQL
+- 🖥️ **Streamlit Dashboard** — Human-in-the-loop approval UI, metrics charts, logs
+- 🐳 **Docker Compose Ready** — One-command deploy with all services
 
-Services report health to `/health` and metrics to `/metrics`. When degradation is detected, the system can auto-rollback or pause for human review via the Streamlit dashboard.
+## 🚀 Quick Start
 
-## 📈 Why It Matters
+```bash
+git clone https://github.com/GBOYEE/aiopsx.git
+cd aiopsx
+cp .env.example .env
+docker compose up -d
+```
 
-- **Production reliability**: Built-in rollback ensures failures don't cascade
-- **Auditability**: Every decision and action is logged with timestamps and user context
-- **Speed**: Deploy a new agent service in minutes, not days
-- **Control**: Granular permissions define what requires human approval
-- **Observability**: Out-of-the-box Prometheus metrics and structured logs
+Open dashboard: http://localhost:8501  
+Control plane: http://localhost:8000/docs (API docs)
 
-Result: You can run AI agents at scale with confidence.
-
----
-
-## ✨ Why this exists
-
-Modern infrastructure generates floods of alerts. Manual triage is slow, error‑prone, and lacks auditability. aiopsx turns LLMs into a reliable autonomous infrastructure engineer that monitors, diagnoses, decides, and acts—safely.
-
-## Key Features
-
-- Real-time metrics + LLM-powered diagnosis
-- Policy-driven decisions (auto / human-approval / block)
-- Safe execution with automatic rollback on degradation
-- Full audit trail & Streamlit approval dashboard
-- Docker‑Compose ready, tests, CI, permissions.yaml
-
-## Architecture
+## 🏗️ Architecture
 
 ```mermaid
 flowchart TD
     subgraph "Monitoring"
-        A[System Metrics] --> B[Alert Engine]
+        A[Agent Health] --> B[Alert Engine]
     end
     B --> C{LLM Diagnosis}
     C --> D[Plan Actions]
     D --> E{Policy Gate}
     E -->|Auto| F[Execute Action]
-    E -->|Human Approval| G[Approval Dashboard]
-    E -->|Block| H[Notify & Log]
+    E -->|Human Approval| G[Streamlit Dashboard]
     G -->|Approve| F
-    G -->|Reject| H
-    F --> I[Post‑action Health Check]
-    I -->|Degraded| J[Rollback]
-    I -->|OK| K[Log Success]
-    J --> K
-    K --> L[(Postgres Audit)]
-    H --> L
+    F --> H[Post-action Health Check]
+    H -->|Degraded| I[Rollback]
+    H -->|OK| J[Log Success]
+    I --> J
+    J --> K[(Postgres Audit)]
 ```
 
-## Quick Start
+See [docs/architecture.md](docs/architecture.md) for detailed explanation.
+
+## 📦 Tech Stack
+
+| Component | Technology |
+|-----------|------------|
+| Control Plane | FastAPI, asyncio |
+| Dashboard | Streamlit |
+| Database | PostgreSQL (state + audit) |
+| Cache/Bus | Redis |
+| LLM | OpenAI / Ollama (pluggable) |
+| Monitoring | Prometheus metrics |
+| Deployment | Docker Compose |
+
+## 🧪 Testing & CI
 
 ```bash
-# Clone and run
-git clone https://github.com/GBOYEE/aiopsx.git
-cd aiopsx
-cp .env.example .env
-# Edit .env with your LLM API key if needed (Ollama works by default)
-docker compose up --build -d
+pytest tests/ -v --cov=app --cov-report=html
 ```
 
-Open dashboard: `http://localhost:8501`
+CI runs on every push: lint (ruff), type-check (mypy), tests, coverage.
 
-## Stack
+## 📚 Documentation
 
-- **FastAPI** — control plane & webhooks
-- **Streamlit** — approval & monitoring dashboard
-- **PostgreSQL** — state & audit logs
-- **Redis** — event bus & coordination
-- **Ollama / OpenAI** — LLM diagnosis
-- **Docker Compose** — one‑command deploy
+- [Getting Started](docs/README.md)
+- [API Reference](docs/api.md)
+- [Configuration](docs/configuration.md)
+- [Contributing](CONTRIBUTING.md)
 
-## Safety & Governance
+## 🎯 Roadmap
 
-- Human‑in‑the‑loop for high‑risk actions via Streamlit approvals
-- Automatic rollback if health degrades after action
-- Immutable audit log (who approved, what changed, outcomes)
-- Granular permissions via `permissions.yaml`
-- Test suite + pre‑commit hooks
+- [ ] Multi-tenant SaaS mode
+- [ ] OAuth2 integrations (GitHub, Google)
+- [ ] Advanced RBAC with resource-level permissions
+- [ ] Audit log UI with filtering and export
+- [ ] Grafana dashboard packs
+- [ ] Webhook notifications (Slack, Teams)
 
-## Status
+## 🤝 Contributing
 
-v1.2.0 — Production‑ready, fully tested, CI enabled.
+We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening issues or PRs.
 
-## License
+**Good first issues:** documentation, UI polish, additional metric collectors.
 
-MIT
+## 📄 License
+
+MIT — see [LICENSE](LICENSE).
+
+---
+
+<p align="center">
+Built by <a href="https://github.com/GBOYEE">Oyebanji Adegboyega</a> • 
+<a href="https://gboyee.github.io">Portfolio</a> • 
+<a href="https://twitter.com/Gboyee_0">@Gboyee_0</a>
+</p>

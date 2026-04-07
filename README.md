@@ -1,14 +1,40 @@
-# aiopsx
+# aiopsx — AI Deployment & Monitoring Toolkit
 
 [![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python&logoColor=white)](https://www.python.org)
 [![Docker](https://img.shields.io/badge/Docker-✓-blue?logo=docker&logoColor=white)](https://www.docker.com)
 [![FastAPI](https://img.shields.io/badge/FastAPI-✓-green?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![Streamlit](https://img.shields.io/badge/Streamlit-✓-red?logo=streamlit&logoColor=white)](https://streamlit.io)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-✓-blue?logo=postgresql&logoColor=white)](https://www.postgresql.org)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-✓-blue?logo=postgresql&logoColor=white)](https://postgresql.org)
 [![Redis](https://img.shields.io/badge/Redis-✓-red?logo=redis&logoColor=white)](https://redis.io)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICIZE.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-Production-grade AIOps with built-in safety, rollback, and human-in-the-loop decision gates.
+## 🚀 What Problem This Solves
+
+Deploying and monitoring AI agents in production is complex: you need health checks, metrics, logging, rollback on failure, and human approval gates. Most DIY solutions are brittle and lack audit trails. aiopsx provides a complete ops toolkit tailored for AI workloads.
+
+## ⚙️ How It Works
+
+aiopsx wraps your AI agent services with:
+- **FastAPI control plane** for health checks, metrics, and actions
+- **Streamlit dashboard** for human-in-the-loop approvals
+- **PostgreSQL** for persistent state and immutable audit logs
+- **Redis** for event bus and coordination
+- **Docker Compose** setup with one-command deploy
+- **Policy engine** (permissions.yaml) to define auto vs. manual actions
+
+Services report health to `/health` and metrics to `/metrics`. When degradation is detected, the system can auto-rollback or pause for human review via the Streamlit dashboard.
+
+## 📈 Why It Matters
+
+- **Production reliability**: Built-in rollback ensures failures don't cascade
+- **Auditability**: Every decision and action is logged with timestamps and user context
+- **Speed**: Deploy a new agent service in minutes, not days
+- **Control**: Granular permissions define what requires human approval
+- **Observability**: Out-of-the-box Prometheus metrics and structured logs
+
+Result: You can run AI agents at scale with confidence.
+
+---
 
 ## ✨ Why this exists
 
@@ -82,4 +108,3 @@ v1.2.0 — Production‑ready, fully tested, CI enabled.
 ## License
 
 MIT
-```

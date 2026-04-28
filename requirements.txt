@@ -13,4 +13,4 @@ black>=24.0
 flake8>=7.0
 mypy>=1.0
 isort>=5.13
-tenacity>=8.0
+tenacity>=9.1.4
